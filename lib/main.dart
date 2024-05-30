@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:first_fbase_239/firebase_options.dart';
 import 'package:first_fbase_239/screens/home_page.dart';
+import 'package:first_fbase_239/screens/user_on_boarding/sign_in_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async{
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      home: SignInPage(),
     );
   }
 }

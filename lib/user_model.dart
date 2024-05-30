@@ -2,7 +2,6 @@ class UserModel {
   String? name;
   String? email;
   String? gender;
-  String? address;
   int? age;
   String? mobNo;
 
@@ -10,7 +9,6 @@ class UserModel {
     required this.name,
     required this.email,
     required this.gender,
-    required this.address,
     required this.age,
     required this.mobNo,
   });
@@ -20,7 +18,6 @@ class UserModel {
         name: doc['name'],
         email: doc['email'],
         gender: doc['gender'],
-        address: doc['address'],
         age: doc['age'],
         mobNo: doc['mobNo']);
   }
@@ -31,7 +28,6 @@ class UserModel {
       "name": name,
       "email": email,
       "gender": gender,
-      "address": address,
       "age": age,
       "mobNo": mobNo,
     };
