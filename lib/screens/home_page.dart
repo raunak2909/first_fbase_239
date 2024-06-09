@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:first_fbase_239/screens/bloc/note_bloc.dart';
 import 'package:first_fbase_239/screens/user_on_boarding/sign_in_page.dart';
 import 'package:first_fbase_239/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  late CollectionReference mUsers;
+  late CollectionReference mUsersNotes;
   String? uid;
   static const COLLECTION_USER_KEY = "users";
   static const COLLECTION_NOTE_KEY = "notes";
@@ -23,71 +25,60 @@ class _HomePageState extends State<HomePage> {
     getUserId();
   }
 
-  getUserId() async{
+  getUserId() async {
     var prefs = await SharedPreferences.getInstance();
     uid = prefs.getString(SignInPage.PREF_USER_ID_KEY);
-    setState(() {
-
-    });
+    context.read<NoteBloc>().add(FetchAllNotes(uid: uid!));
   }
 
   @override
   Widget build(BuildContext context) {
-    mUsers = firestore.collection(COLLECTION_USER_KEY).doc(uid).collection(COLLECTION_NOTE_KEY);
-
     return Scaffold(
       appBar: AppBar(title: Text('Firebase App')),
-      body: uid != null ? FutureBuilder(
-        future: firestore.collection(COLLECTION_USER_KEY).doc(uid).collection(COLLECTION_NOTE_KEY).get(),
-        builder: (_, snapshots) {
-          if (snapshots.connectionState == ConnectionState.waiting) {
+      body: BlocBuilder<NoteBloc, NoteState>(
+        builder: (_, state) {
+          if (state is NoteLoadingState) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          if (snapshots.hasError) {
+          if (state is NoteErrorState) {
             return Center(
-              child: Text('Error: ${snapshots.error}'),
+              child: Text('Error: ${state.errorMsg}'),
             );
           }
 
-          if (snapshots.hasData) {
+          if (state is NoteLoadedState) {
             return ListView.builder(
-                itemCount: snapshots.data!.size,
+                itemCount: state.arrNotes.length,
                 itemBuilder: (_, index) {
                   //Map<String, dynamic> data = snapshots.data!.docs[index].data();
-                  UserModel eachModel =
-                      UserModel.fromDoc(snapshots.data!.docs[index].data());
+                  var nTitle = state.arrNotes[index]['title'];
+                  var nDesc = state.arrNotes[index]['desc'];
                   return ListTile(
-                    title: Text('${eachModel.name}'),
-                    subtitle: Text('${eachModel.email}'),
+                    title: Text(nTitle),
+                    subtitle: Text(nDesc),
                   );
                 });
           }
 
           return Container();
         },
-      ) : Center(child: CircularProgressIndicator(),),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var newUser = UserModel(
+          /*var newUser = UserModel(
               name: "Ramanujan",
               email: "ramanu@gmail.com",
               gender: "Male",
               age: 25,
-              mobNo: "8877887788");
+              mobNo: "8877887788");*/
 
-          mUsers
-              .add(newUser.toDoc())
-              .then((value) {
-                print("DocId: ${value.id}");
-                setState(() {
-
-                });
-          }, onError: (e) {
-            print("Error: $e");
-          });
+          context.read<NoteBloc>().add(AddNoteEvent(
+              uid: uid!,
+              title: "New Note from BLOC",
+              desc: "Note added successfully!!"));
         },
         child: Icon(Icons.add),
       ),
