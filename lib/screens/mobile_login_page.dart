@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,20 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    int secs = 60;
+
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if(secs>0) {
+        secs--;
+      } else {
+        // enable btn visibility
+      }
+    });
+
+   /* Future.delayed(Duration(seconds: 60), (){
+
+    });*/
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -29,6 +45,7 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
 
 
               await FirebaseAuth.instance.verifyPhoneNumber(
+                timeout: Duration(seconds: 60),
                 phoneNumber: '+91${mobNoController.text}',
                 verificationCompleted: (PhoneAuthCredential credential) {
                   print("Verification Completed");

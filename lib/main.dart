@@ -4,6 +4,7 @@ import 'package:first_fbase_239/firebase_options.dart';
 import 'package:first_fbase_239/screens/bloc/note_bloc.dart';
 import 'package:first_fbase_239/screens/home_page.dart';
 import 'package:first_fbase_239/screens/mobile_login_page.dart';
+import 'package:first_fbase_239/screens/otp_page.dart';
 import 'package:first_fbase_239/screens/profile_page.dart';
 import 'package:first_fbase_239/screens/storage_page.dart';
 import 'package:first_fbase_239/screens/user_on_boarding/sign_in_page.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ProfilePage(),
+      home: OTPPage(),
     );
   }
 }
